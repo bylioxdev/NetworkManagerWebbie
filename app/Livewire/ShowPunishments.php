@@ -60,7 +60,7 @@ class ShowPunishments extends Component
     {
         return [
             'typeId' => 'required|integer',
-            'playerUUID' => 'required|uuid|exists:players,uuid',
+            'playerUUID' => 'required',
             'punisherUUID' => 'required|uuid',
             'time' => 'required|date',
             'end' => $this->isTemporary ? 'required|date' : '',
@@ -124,7 +124,17 @@ class ShowPunishments extends Component
         $validatedData = $this->validate();
 
         $type = PunishmentType::from($validatedData['typeId']);
+
+        // Check if uuid is valid and if not, try to find it by name.
         $uuid = $validatedData['playerUUID'];
+        if (!Player::where('uuid', $uuid)->exists()) {
+            $player = Player::where('username', $uuid)->first();
+            if ($player != null) {
+                $uuid = $player->uuid;
+            }
+        }
+
+
         $punisher = $validatedData['punisherUUID'];
         $time = Carbon::parse($validatedData['time'])->getPreciseTimestamp(3);
         $end = $type->isTemporary() ? Carbon::parse($validatedData['end'])->getPreciseTimestamp(3) : -1;
