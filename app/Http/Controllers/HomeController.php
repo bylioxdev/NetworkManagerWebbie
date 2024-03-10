@@ -54,6 +54,21 @@ class HomeController extends Controller
         }
     }
 
+    private function getTotalPlaytime(): string
+    {
+        $data = DB::table('sessions')->select('time')->get();
+
+        $time = 0;
+        foreach ($data as $item) {
+            $time += $item->time;
+        }
+        try {
+            return CarbonInterval::millisecond($time)->cascade()->forHumans(['short' => true, 'options' => 0]);
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
     /**
      * Show the application dashboard.
      *
@@ -65,6 +80,6 @@ class HomeController extends Controller
             ->with('total_players', $this->getTotalPlayers())
             ->with('today_online_players', $this->getTodayOnlinePlayers())
             ->with('new_players', $this->getNewPlayers())
-            ->with('today_playtime', $this->getTodayPlaytime());
+            ->with('total_playtime', $this->getTotalPlaytime());
     }
 }

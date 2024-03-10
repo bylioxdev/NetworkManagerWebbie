@@ -55,8 +55,8 @@
                             <i class="fas fa-user-clock text-danger fa-3x"></i>
                         </div>
                         <div class="text-end">
-                            <h3>{{ $today_playtime }}</h3>
-                            <p class="mb-0">Today Playtime</p>
+                            <h3>{{ $total_playtime }}</h3>
+                            <p class="mb-0">Totale Spielzeit</p>
                         </div>
                     </div>
                 </div>
